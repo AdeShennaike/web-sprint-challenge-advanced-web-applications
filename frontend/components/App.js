@@ -12,40 +12,25 @@ import axiosWithAuth from '../axios'
 const loginUrl = 'http://localhost:9000/api/login'
 
 export default function App() {
-  // ✨ MVP can be achieved with these states
   const [message, setMessage] = useState('')
   const [articles, setArticles] = useState([])
   const [currentArticleId, setCurrentArticleId] = useState()
   const [spinnerOn, setSpinnerOn] = useState(false)
 
-  // ✨ Research `useNavigate` in React Router v.6
   const navigate = useNavigate()
-  const redirectToLogin = () => { navigate('/')/* ✨ implement */ }
-  const redirectToArticles = () => { navigate('/articles')/* ✨ implement */ }
+  const redirectToLogin = () => { navigate('/')}
+  const redirectToArticles = () => { navigate('/articles')}
 
   const logout = () => {
-    console.log('logout')
-    // ✨ implement
-    // If a token is in local storage it should be removed,
-    // and a message saying "Goodbye!" should be set in its proper state.
-    // In any case, we should redirect the browser back to the login screen,
-    // using the helper above.
     localStorage.removeItem('token')
     setMessage('Goodbye!')
     redirectToLogin()
-
   }
 
   const login = ({ username, password }) => {
-    // ✨ implement
-    // We should flush the message state, turn on the spinner
-    // and launch a request to the proper endpoint.
-    // On success, we should set the token to local storage in a 'token' key,
-    // put the server success message in its proper state, and redirect
-    // to the Articles screen. Don't forget to turn off the spinner!
     axios.post(loginUrl,{ username, password })
     .then(res => {
-      debugger
+      // debugger
       setSpinnerOn(true)
       localStorage.setItem('token', res.data.token)
       setMessage(res.data.message)
@@ -56,20 +41,34 @@ export default function App() {
       console.error(err)
     })
     .finally(setSpinnerOn(false))
-    // setMessage('')
     // debugger
+    // setMessage('')
   }
-
+  
   const getArticles = () => {
-    // ✨ implement
-    // We should flush the message state, turn on the spinner
-    // and launch an authenticated request to the proper endpoint.
-    // On success, we should set the articles in their proper state and
-    // put the server success message in its proper state.
-    // If something goes wrong, check the status of the response:
-    // if it's a 401 the token might have gone bad, and we should redirect to login.
-    // Don't forget to turn off the spinner!
     axiosWithAuth().get()
+    .then(res => {
+      // debugger
+      setSpinnerOn(true)
+      setArticles(res.data.articles)
+      setMessage(res.data.message)
+      setSpinnerOn(false)
+    })
+    .catch(err => {
+      debugger
+      console.error(err)
+      if(err.response.status === 401){
+        return redirectToLogin()
+      }
+    })
+  }
+  
+  const postArticle = article => {
+    // ✨ implement
+    // The flow is very similar to the `getArticles` function.
+    // You'll know what to do! Use log statements or breakpoints
+    // to inspect the response from the server.
+    axiosWithAuth().post(article) 
     .then(res => {
       debugger
       setSpinnerOn(true)
@@ -77,25 +76,33 @@ export default function App() {
       setMessage(res.data.message)
     })
     .catch(err => {
-      debugger
-      // console.error(err)
-      // err.response.status === 401 ? navigate('/')
+      // debugger
+      console.error(err)
     })
     .finally(setSpinnerOn(false))
-    // setMessage('')
-    // debugger
   }
-
-  const postArticle = article => {
-    // ✨ implement
-    // The flow is very similar to the `getArticles` function.
-    // You'll know what to do! Use log statements or breakpoints
-    // to inspect the response from the server.
-  }
-
+  // "title": "foo", "text": "bar", "topic": "React"
+  
   const updateArticle = ({ article_id, article }) => {
     // ✨ implement
     // You got this!
+    
+    // axiosWithAuth().post(article) 
+    // .then(res => {
+    //   debugger
+    //   // setSpinnerOn(true)
+    //   // setArticles()
+    //   // setMessage(res.data.message)
+    // })
+    // .catch(err => {
+    //   debugger
+    //   console.error(err)
+    //   if(err.response.status === 401){
+    //     return redirectToLogin()
+    //   }else{
+    //     console.error(err)
+    //   }
+    // })
   }
 
   const deleteArticle = article_id => {
@@ -118,7 +125,7 @@ export default function App() {
           <Route path="/" element={<LoginForm login = {login} />} />
           <Route path="articles" element={
             <>
-              <ArticleForm />
+              <ArticleForm postArticle = {postArticle} articles = {articles} />
               <Articles articles = {articles} getArticles = {getArticles}/>
             </>
           } />
