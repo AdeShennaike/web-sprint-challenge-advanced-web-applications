@@ -55,7 +55,7 @@ export default function App() {
       setSpinnerOn(false)
     })
     .catch(err => {
-      debugger
+      // debugger
       console.error(err)
       if(err.response.status === 401){
         return redirectToLogin()
@@ -64,10 +64,6 @@ export default function App() {
   }
   
   const postArticle = article => {
-    // ✨ implement
-    // The flow is very similar to the `getArticles` function.
-    // You'll know what to do! Use log statements or breakpoints
-    // to inspect the response from the server.
     axiosWithAuth().post(article) 
     .then(res => {
       debugger
@@ -81,28 +77,20 @@ export default function App() {
     })
     .finally(setSpinnerOn(false))
   }
-  // "title": "foo", "text": "bar", "topic": "React"
   
-  const updateArticle = ({ article_id, article }) => {
-    // ✨ implement
-    // You got this!
-    
-    // axiosWithAuth().post(article) 
-    // .then(res => {
-    //   debugger
-    //   // setSpinnerOn(true)
-    //   // setArticles()
-    //   // setMessage(res.data.message)
-    // })
-    // .catch(err => {
-    //   debugger
-    //   console.error(err)
-    //   if(err.response.status === 401){
-    //     return redirectToLogin()
-    //   }else{
-    //     console.error(err)
-    //   }
-    // })
+  const updateArticle = ({ article_id, article }) => {    
+    axiosWithAuth().put(`${article_id}`, article) 
+    .then(res => {
+      debugger
+      // setSpinnerOn(true)
+      // setArticles()
+      // setMessage(res.data.message)
+    })
+    .catch(err => {
+      debugger
+      console.error(err)
+    })
+    .finally(setSpinnerOn(false))
   }
 
   const deleteArticle = article_id => {
@@ -125,8 +113,8 @@ export default function App() {
           <Route path="/" element={<LoginForm login = {login} />} />
           <Route path="articles" element={
             <>
-              <ArticleForm postArticle = {postArticle} articles = {articles} />
-              <Articles articles = {articles} getArticles = {getArticles}/>
+              <ArticleForm postArticle = {postArticle} articles = {articles} updateArticle = {updateArticle} currentArticleId = {currentArticleId} />
+              <Articles articles = {articles} getArticles = {getArticles} setCurrentArticleId = {setCurrentArticleId} />
             </>
           } />
         </Routes>
