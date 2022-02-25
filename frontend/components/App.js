@@ -6,8 +6,9 @@ import Message from './Message'
 import ArticleForm from './ArticleForm'
 import Spinner from './Spinner'
 import axios from 'axios'
+import axiosWithAuth from '../axios'
 
-const articlesUrl = 'http://localhost:9000/api/articles'
+// const articlesUrl = 'http://localhost:9000/api/articles'
 const loginUrl = 'http://localhost:9000/api/login'
 
 export default function App() {
@@ -45,9 +46,9 @@ export default function App() {
     axios.post(loginUrl,{ username, password })
     .then(res => {
       debugger
+      setSpinnerOn(true)
       localStorage.setItem('token', res.data.token)
       setMessage(res.data.message)
-      setSpinnerOn(true)
       redirectToArticles()
     })
     .catch(err => {
@@ -68,6 +69,21 @@ export default function App() {
     // If something goes wrong, check the status of the response:
     // if it's a 401 the token might have gone bad, and we should redirect to login.
     // Don't forget to turn off the spinner!
+    axiosWithAuth().get()
+    .then(res => {
+      debugger
+      setSpinnerOn(true)
+      setArticles()
+      setMessage(res.data.message)
+    })
+    .catch(err => {
+      debugger
+      // console.error(err)
+      // err.response.status === 401 ? navigate('/')
+    })
+    .finally(setSpinnerOn(false))
+    // setMessage('')
+    // debugger
   }
 
   const postArticle = article => {
@@ -103,7 +119,7 @@ export default function App() {
           <Route path="articles" element={
             <>
               <ArticleForm />
-              <Articles />
+              <Articles articles = {articles} getArticles = {getArticles}/>
             </>
           } />
         </Routes>
