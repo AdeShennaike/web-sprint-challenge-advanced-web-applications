@@ -8,6 +8,6 @@ export default function axiosWithAuth() {
         headers: {
             Authorization: token
         },
-        baseURL: 'http://localhost:9000/api/articles'
+        // baseURL: 'http://localhost:9000/api/articles'
     })
 }
