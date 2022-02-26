@@ -14,7 +14,7 @@ const loginUrl = 'http://localhost:9000/api/login'
 export default function App() {
   const [message, setMessage] = useState('')
   const [articles, setArticles] = useState([])
-  const [currentArticleId, setCurrentArticleId] = useState()
+  const [currentArticleId, setCurrentArticleId] = useState(null)
   const [spinnerOn, setSpinnerOn] = useState(false)
 
   const navigate = useNavigate()
@@ -68,14 +68,14 @@ export default function App() {
     .then(res => {
       debugger
       setSpinnerOn(true)
-      setArticles()
+      setArticles(res.data.articles)
       setMessage(res.data.message)
+      setSpinnerOn(false)
     })
     .catch(err => {
       // debugger
       console.error(err)
     })
-    .finally(setSpinnerOn(false))
   }
   
   const updateArticle = ({ article_id, article }) => {    
@@ -85,19 +85,25 @@ export default function App() {
       setArticles(articles.map( art => {
         art.id === article_id ? res.data.articles : art
       }))
-      setCurrentArticleId()
+      setMessage(res.data.message)
+      setCurrentArticleId(null)
       // setSpinnerOn(true)
-      // setMessage(res.data.message)
     })
     .catch(err => {
       debugger
       console.error(err)
     })
-    // .finally(setSpinnerOn(false))
   }
-
+  
   const deleteArticle = article_id => {
     // ✨ implement
+    axiosWithAuth().delete(`${article_id}`) 
+    .then(res => {
+      setArticles(articles.filter( (art) => {
+        art.id === article_id
+      }))
+      setMessage(res.data.message)
+    })
   }
 
   return (
@@ -117,7 +123,7 @@ export default function App() {
           <Route path="articles" element={
             <>
               <ArticleForm postArticle = {postArticle} articles = {articles} updateArticle = {updateArticle} currentArticleId = {currentArticleId} />
-              <Articles articles = {articles} getArticles = {getArticles} setCurrentArticleId = {setCurrentArticleId} />
+              <Articles articles = {articles} getArticles = {getArticles} setCurrentArticleId = {setCurrentArticleId} deleteArticle = {deleteArticle} />
             </>
           } />
         </Routes>

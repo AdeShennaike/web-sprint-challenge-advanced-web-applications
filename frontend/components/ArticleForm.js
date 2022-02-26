@@ -9,14 +9,15 @@ export default function ArticleForm(props) {
   const {postArticle, articles, updateArticle, currentArticleId} = props;
 
   useEffect(() => {
-    console.log(currentArticleId)
-    // ✨ implement
-    // Every time the `currentArticle` prop changes, we should check it for truthiness:
-    // if it's truthy, we should set its title, text and topic into the corresponding
-    // values of the form. If it's not, we should reset the form back to initial values.
-    currentArticleId ? setValues(articles.find(art => {
-      return art.id == currentArticleId})) : setValues(initialFormValues)
-  },[currentArticleId])
+    //   // ✨ implement
+    //   // Every time the `currentArticle` prop changes, we should check it for truthiness:
+    //   // if it's truthy, we should set its title, text and topic into the corresponding
+    //   // values of the form. If it's not, we should reset the form back to initial values.
+      // currentArticleId ? setValues(articles.find(art => {
+      //     return art.id == currentArticleId})) : setValues(initialFormValues)
+    },[currentArticleId])
+      // debugger
+    console.log(values)
 
   const onChange = evt => {
     const { id, value } = evt.target
@@ -25,10 +26,10 @@ export default function ArticleForm(props) {
   
   const onSubmit = evt => {
     evt.preventDefault()
-    currentArticleId ? 
-    updateArticle(currentArticleId, values) :
+    // currentArticleId ? 
+    // updateArticle(currentArticleId, values) :
     postArticle(values)
-    setValues(initialFormValues)
+    // setValues(initialFormValues)
   }
 
   const isDisabled = () => {

@@ -4,15 +4,13 @@ import PT from 'prop-types'
 
 export default function Articles(props) {
   const navigate = useNavigate()
-  const {articles, getArticles, setCurrentArticleId} = props
+  const {articles, getArticles, setCurrentArticleId, deleteArticle} = props
   
   useEffect(() => {
     !localStorage.key('token') ? navigate('/') : getArticles()
   },[])
   
   return (
-    // ✨ fix the JSX: replace `Function.prototype` with actual functions
-    // and use the articles prop to generate articles
     <div className="articles">
           <h2>Articles</h2>
           {
@@ -28,7 +26,7 @@ export default function Articles(props) {
                     </div>
                     <div>
                       <button disabled={false} onClick={() => {setCurrentArticleId(art.article_id)}}>Edit</button>
-                      <button disabled={true} onClick={Function.prototype}>Delete</button>
+                      <button disabled={false} onClick={() => {deleteArticle(art.article_id)}}>Delete</button>
                     </div>
                   </div>
                 )
