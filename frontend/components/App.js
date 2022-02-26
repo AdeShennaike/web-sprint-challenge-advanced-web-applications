@@ -82,15 +82,18 @@ export default function App() {
     axiosWithAuth().put(`${article_id}`, article) 
     .then(res => {
       debugger
+      setArticles(articles.map( art => {
+        art.id === article_id ? res.data.articles : art
+      }))
+      setCurrentArticleId()
       // setSpinnerOn(true)
-      // setArticles()
       // setMessage(res.data.message)
     })
     .catch(err => {
       debugger
       console.error(err)
     })
-    .finally(setSpinnerOn(false))
+    // .finally(setSpinnerOn(false))
   }
 
   const deleteArticle = article_id => {

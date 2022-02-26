@@ -5,7 +5,7 @@ import PT from 'prop-types'
 export default function Articles(props) {
   const navigate = useNavigate()
   const {articles, getArticles, setCurrentArticleId} = props
- 
+  
   useEffect(() => {
     !localStorage.key('token') ? navigate('/') : getArticles()
   },[])
@@ -27,7 +27,7 @@ export default function Articles(props) {
                       <p>Topic: {art.topic}</p>
                     </div>
                     <div>
-                      <button disabled={true} onClick={() => {setCurrentArticleId(art.article_id)}}>Edit</button>
+                      <button disabled={false} onClick={() => {setCurrentArticleId(art.article_id)}}>Edit</button>
                       <button disabled={true} onClick={Function.prototype}>Delete</button>
                     </div>
                   </div>
